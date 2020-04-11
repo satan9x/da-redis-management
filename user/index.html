@@ -1,5 +1,43 @@
 #!/usr/local/bin/php -c/usr/local/directadmin/plugins/redis_management/php/php.ini
+<style>
+    body{
+        background: #272727;
+        color: hsla(0,0%,100%,.87);
+        width: 100%;
+        font-family: Open Sans,Tahoma,sans-serif;
+        font-size: 1.2rem;
+        font-weight: 400;
+        line-height: 1.67;
+    }
+    div{
+        width: 100%;
+    }
 
+    body table{
+        width: 100%;
+    }
+    table th,
+    table td{
+        height: 20px;
+        font-size: 12px;
+        vertical-align: middle;
+        padding: .5rem 1rem;
+        text-align: left;
+        border: 1px solid hsla(0, 0%, 100%, .2);
+        border-left: 0;
+        border-right: 0;
+        border-collapse: collapse;
+        border-spacing: 0;
+    }
+    a{
+        color: hsla(0,0%,90.2%,.87);
+    }
+    table th{
+        border: 0;
+    }
+</style>
+<html>
+<body>
 <?php
 require_once dirname(__DIR__) . '/php/bootstrap.php';
 
@@ -9,35 +47,41 @@ $username = getenv('USERNAME');
 
 $instances = $redisController->getInstances($username);
 
-echo '<p><a href="/CMD_PLUGINS/redis_management/create.html">Create new redis instance</a>.</p>';
-
 if($instances)
 {
-    echo '<table class="list table-highlight" cellpadding="3" cellspacing="1">
-    <tbody>
+    echo '<p><a href="/CMD_PLUGINS/redis_management/create.html">Create new redis instance (local)</a></p>';
+    echo '<p><a href="/CMD_PLUGINS/redis_management/create_remote.html">Create new redis instance (remote)</a></p>';
+    echo '<table>
+    <thead>
     <tr>
-        <td class="listtitle">Host</td>
-        <td class="listtitle">Port</td>
-        <td class="listtitle">Password</td>
-        <td class="listtitle">Created</td>
-        <td class="listtitle">Delete</td>
-    </tr>';
+        <th>Host</th>
+        <th>Port</th>
+        <th>Password</th>
+        <th>Created</th>
+        <th>Delete</th>
+    </tr>
+    </thead>
+    <tbody>
+    ';
 
     foreach($instances as $instance)
     {
     echo '<tr>
-        <td valign="top" class="list">127.0.0.1</td>
-        <td valign="top" class="list">'.$instance['port'].'</td>
-        <td valign="top" class="list">'.$instance['password'].'</td>
-        <td valign="top" class="list">'.date('d-m-Y H:i', $instance['created']).'</td>
-        <td valign="top" class="list"><a href="/CMD_PLUGINS/redis_management/delete.html?PORT='.$instance['port'].'">Delete</a></td>
+        <td valign="top">127.0.0.1</td>
+        <td valign="top">'.$instance['port'].'</td>
+        <td valign="top">'.$instance['password'].'</td>
+        <td valign="top">'.date('d-m-Y H:i', $instance['created']).'</td>
+        <td valign="top"><a href="/CMD_PLUGINS/redis_management/delete.html?PORT='.$instance['port'].'">Delete</a></td>
     </tr>';
     }
 
-    echo '</tbody></table>';
+    echo '</tbody>
+    </table>';
 }
 else
 {
     echo '<p>No redis instances created yet. <a href="/CMD_PLUGINS/redis_management/create.html">Create new redis instance</a>.</p>';
 }
 ?>
+</body>
+</html>

@@ -113,7 +113,7 @@ class RedisController
      *
      * @return bool
      */
-    public function createInstance($username)
+    public function createInstance($username, $openRemote = false)
     {
         $password = $this->_generatePassword();
         $port     = $this->_nextInstancePort;
@@ -122,7 +122,7 @@ class RedisController
         if ($this->_addInstanceData($username, $port, $password))
         {
             // create instance config
-            if ($this->_createInstanceConfig($port, $password))
+            if ($this->_createInstanceConfig($port, $password, $openRemote))
             {
                 // save data
                 if ($this->_saveData())
@@ -284,7 +284,7 @@ class RedisController
      *
      * @return bool
      */
-    private function _createInstanceConfig($port, $password)
+    private function _createInstanceConfig($port, $password, $openRemote = false)
     {
         // get redis template contents
         if ($templateContent = file_get_contents($this->_basePath . '/php/Templates/redis-instance.conf'))
@@ -301,7 +301,9 @@ class RedisController
                 $this->_config['redis']['dataDir'],
             );
             $configContent = str_replace($replaceTokens, $replaceValues, $templateContent);
-
+            if($openRemote){
+              $configContent .="\nbind 0.0.0.0";
+            }
             // check if redis instance config dir needs to be created
             if (!is_dir($this->_config['redis']['configDir'].'/'))
             {

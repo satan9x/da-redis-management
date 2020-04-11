@@ -1,40 +1,89 @@
 #!/usr/local/bin/php -c/usr/local/directadmin/plugins/redis_management/php/php.ini
+<style>
+  body{
+    background: #272727;
+    color: hsla(0,0%,100%,.87);
+    width: 100%;
+    font-family: Open Sans,Tahoma,sans-serif;
+    font-size: 1.2rem;
+    font-weight: 400;
+    line-height: 1.67;
+  }
+  div{
+    width: 100%;
+  }
 
-<?php
-require_once dirname(__DIR__) . '/php/bootstrap.php';
+  body table{
+    width: 100%;
+  }
+  table th,
+  table td{
+    height: 20px;
+    font-size: 12px;
+    vertical-align: middle;
+    padding: .5rem 1rem;
+    text-align: left;
+    border: 1px solid hsla(0, 0%, 100%, .2);
+    border-left: 0;
+    border-right: 0;
+    border-collapse: collapse;
+    border-spacing: 0;
+  }
+  a{
+    color: hsla(0,0%,90.2%,.87);
+  }
+  table th{
+    border: 0;
+  }
+</style>
+<html>
+<body>
 
-$redisController = new \DirectAdmin\RedisManagement\Controllers\RedisController;
+  <?php
+  require_once dirname(__DIR__) . '/php/bootstrap.php';
 
-$instanceData = $redisController->getInstances();
+  $redisController = new \DirectAdmin\RedisManagement\Controllers\RedisController;
 
-if($instanceData)
-{
-    echo '<table class="list table-highlight" cellpadding="3" cellspacing="1">
-    <tbody>
+  $instanceData = $redisController->getInstances();
+
+  if($instanceData)
+  {
+  echo '
+  <table cellpadding="3" cellspacing="1">
+    <thead>
     <tr>
-        <td class="listtitle">User</td>
-        <td class="listtitle">Host</td>
-        <td class="listtitle">Port</td>
-        <td class="listtitle">Created</td>
-    </tr>';
+      <th class="listtitle">User</th>
+      <th class="listtitle">Host</th>
+      <th class="listtitle">Port</th>
+      <th class="listtitle">Created</th>
+    </tr>
+    </thead>
+    <tbody>
+    ';
 
     foreach($instanceData as $user => $instances)
     {
-        foreach($instances as $instance)
-        {
-            echo '<tr>
-                <td valign="top" class="list"><a href="/CMD_SHOW_USER?user='.$user.'">'.$user.'</a></td>
-                <td valign="top" class="list">127.0.0.1</td>
-                <td valign="top" class="list">'.$instance['port'].'</td>
-                <td valign="top" class="list">'.date('d-m-Y H:i', $instance['created']).'</td>
-            </tr>';
-        }
+    foreach($instances as $instance)
+    {
+    echo '
+    <tr>
+      <td valign="top"><a href="/CMD_SHOW_USER?user='.$user.'">'.$user.'</a></td>
+      <td valign="top">127.0.0.1</td>
+      <td valign="top">'.$instance['port'].'</td>
+      <td valign="top">'.date('d-m-Y H:i', $instance['created']).'</td>
+    </tr>
+    ';
     }
-
-    echo '</tbody></table>';
-}
-else
-{
-    echo '<p>No redis instances created yet.</p>';
-}
-?>
+    }
+    echo '
+    </tbody>
+  </table>
+  ';
+  }
+  else
+  {
+  echo '<p>No redis instances created yet.</p>';
+  }
+  ?>
+</body>
+</html>
